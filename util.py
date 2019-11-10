@@ -10,13 +10,18 @@ from logger import Log
 class Utility:
     """Class containing utilitarian functions intended to reduce duplicate code."""
 
-    def GET(self, url: str, headers={}):
+    def GET(self, url: str, parameters=None, headers=None):
         """
         Return the response of a successful HTTP GET request to the specified
         URL with the optionally provided header values.
         """
 
-        res = requests.get(url, headers=headers)
+        if headers is None:
+            headers = {}
+        if parameters is None:
+            parameters = {}
+        res = requests.get(url, params=parameters, headers=headers)
+        print(res.content)
 
         # HTTP 200 (OK)
         if res.status_code == 200:

@@ -24,16 +24,18 @@ class Athena:
                 Log.Info(self, f"Delaying process start for {self.delay}s...")
                 sleep(self.delay)
 
-            itemShop = Utility.GET(self, "https://fn.notofficer.de/api/shop")
+            itemShop = Utility.GET(self, "https://fortnite-api.com/shop/br", parameters={'language': self.language})
 
             if itemShop is not None:
-                itemShop = json.loads(itemShop)
+                itemShop = json.loads(itemShop)['data']
+
 
                 # Strip time from the timestamp, we only need the date
                 date = Utility.ISOtoHuman(self, itemShop["date"].split("T")[0])
-                Log.Success(self, f"Retrieved Item Shop for {date}")
+                Log.Success(self, f"Retrieved Item Shop for {date} in {self.language}")
 
                 shopImage = Athena.GenerateImage(self, date, itemShop)
+
 
                 if shopImage is True:
                     if self.twitterEnabled is True:
@@ -49,6 +51,7 @@ class Athena:
         configuration = json.loads(Utility.ReadFile(self, "configuration", "json"))
 
         try:
+            self.language = configuration["language"]
             self.delay = configuration["delayStart"]
             self.supportACreator = configuration["supportACreator"]
             self.twitterEnabled = configuration["twitter"]["enabled"]
@@ -176,7 +179,7 @@ class Athena:
             rarity = item["items"][0]["rarity"]
             category = item["items"][0]["type"]
             price = str(item["finalPrice"])
-            if (category == "Outfit") or (category == "Wrap"):
+            if (category == "outfit") or (category == "wrap"):
                 if item["items"][0]["images"]["featured"] is not None:
                     icon = item["items"][0]["images"]["featured"]["url"]
                 else:
@@ -188,21 +191,21 @@ class Athena:
 
             return
 
-        if rarity == "Common":
+        if rarity == "common":
             blendColor = (190, 190, 190)
-        elif rarity == "Uncommon":
+        elif rarity == "uncommon":
             blendColor = (96, 170, 58)
-        elif rarity == "Rare":
+        elif rarity == "rare":
             blendColor = (73, 172, 242)
-        elif rarity == "Epic":
+        elif rarity == "epic":
             blendColor = (177, 91, 226)
-        elif rarity == "Legendary":
+        elif rarity == "legendary":
             blendColor = (211, 120, 65)
-        elif rarity == "Marvel":
+        elif rarity == "marvel":
             blendColor = (197, 51, 52)
-        elif rarity == "Dark":
+        elif rarity == "dark":
             blendColor = (251, 34, 223)
-        elif rarity == "DC":
+        elif rarity == "dc":
             blendColor = (84, 117, 199)
         else:
             blendColor = (255, 255, 255)
