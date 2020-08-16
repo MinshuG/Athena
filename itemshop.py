@@ -15,8 +15,7 @@ class Athena:
 
     def main(self):
         Log.Intro(self, "Athena - Fortnite Item Shop Generator")
-        Log.Intro(self, "https://github.com/EthanC/Athena\n")
-
+        
         initialized = Athena.LoadConfiguration(self)
 
         if initialized is True:
@@ -177,6 +176,7 @@ class Athena:
         try:
             name = item["items"][0]["name"]
             rarity = item["items"][0]["rarity"]
+            displayrarity = item["items"][0]["displayRarity"]
             category = item["items"][0]["type"]
             price = str(item["finalPrice"])
             if (category == "outfit") or (category == "wrap"):
@@ -223,10 +223,31 @@ class Athena:
 
         card.paste(layer)
 
-        icon = ImageUtil.Download(self, icon)
-        icon = ImageUtil.RatioResize(self, icon, 285, 365)
-        card.paste(icon, ImageUtil.CenterX(self, icon.width, card.width), icon)
+        if category == 'glider':
+            x = 285/1.1
+            y = 365/1.8
+            distanceTop=60
+        elif category == 'music':
+            x = 285/1.1
+            y = 365/1.6
+            distanceTop=55
+        elif category == 'pickaxe':
+            x = 285/1.1
+            y = 365/1.3
+            distanceTop=40
+        elif category == 'wrap':
+            x = 285/1.1
+            y = 365/1.3
+            distanceTop=40
+        else:
+            x = 285
+            y = 365
+            distanceTop=10
 
+        icon = ImageUtil.Download(self, icon)
+        icon = ImageUtil.RatioResize(self, icon, x, y)
+        card.paste(icon, ImageUtil.CenterX(self, icon.width, card.width,distanceTop=distanceTop), icon)
+        
         if len(item["items"]) > 1:
             # Track grid position
             i = 0
@@ -301,10 +322,10 @@ class Athena:
         canvas = ImageDraw.Draw(card)
 
         font = ImageUtil.Font(self, 30)
-        textWidth, _ = font.getsize(f"{rarity} {category}")
+        textWidth, _ = font.getsize(f"{displayrarity} {category.title()}")
         canvas.text(
             ImageUtil.CenterX(self, textWidth, card.width, 385),
-            f"{rarity} {category}",
+            f"{displayrarity} {category.title()}",
             blendColor,
             font=font,
         )

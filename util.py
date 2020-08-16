@@ -21,7 +21,7 @@ class Utility:
         if parameters is None:
             parameters = {}
         res = requests.get(url, params=parameters, headers=headers)
-        print(res.content)
+        #print(res.content)
 
         # HTTP 200 (OK)
         if res.status_code == 200:
